@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 const router = require("./routes/tasks");
 const cors = require("cors");
+const Eureka = require("eureka-js-client").Eureka;
 
 const app = express();
 
@@ -12,6 +13,27 @@ app.use(cors());
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+Eureka.fetchRegistry = false;
+Eureka.registerWithEureka = false;
+const client = new Eureka({
+  // application instance information
+  instance: {
+    app: "jqservice",
+    hostName: "localhost",
+    ipAddr: "127.0.0.1",
+    port: 4000,
+    vipAddress: "jq.test.something.com",
+    dataCenterInfo: {
+      name: "Mahdi",
+    },
+  },
+  eureka: {
+    // eureka server host / port
+    host: "192.168.99.100",
+    port: 32768,
+  },
+});
+client.start();
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
